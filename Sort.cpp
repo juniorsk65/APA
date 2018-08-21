@@ -50,12 +50,20 @@ void quickSort(int* num, int inferior, int superior)
     int pivo, aux;
     int esquerda = inferior;
     int direita = superior;
-    //Considerando o pivo como o meio
+    
+    //Se o array contem apenas um elemento, ou esta vazio
+    //isso significa que este elemento ja esta ordenado
+    //e não devemos continuar a iteração com o pivo
+    if(inferior >= superior)
+        return;
+    //Passando como pivo o primeiro elemento do array
+    //caso seja passado um elemento diferente do primeiro
+    //deve ser alterado o while
     pivo = inferior;
+
 
     while(esquerda < direita){
         //Repita enquanto os elementos da primeira parte forem menores que o pivo
-        printf("olha a merda");
         while(num[esquerda] <= num[pivo] && esquerda < superior){
             esquerda++;  
         }
@@ -132,7 +140,6 @@ void mergeSort(int vetor[], int comeco, int fim){
 
 int main(void)
 {
-    printf("oii");
     clock_t Ticks[8];                 
     int i = 0;
     FILE *file; // Abrindo arquivo
