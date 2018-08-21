@@ -37,45 +37,60 @@ void selectionSort(int num[], int tam) {
      }
   }
 }
+//Função de mudança dos elementos do array;
+void swap(int* num1, int* num2)
+{
+    int t = *num1;
+    *num1 = *num2;
+    *num2 = t;
+}
 
-void quickSort(int num[], int inferior, int superior)
+void quickSort(int* num, int inferior, int superior)
 {
     int pivo, aux;
     int esquerda = inferior;
     int direita = superior;
-
     //Considerando o pivo como o meio
-    pivo = num[(direita + esquerda)/2];
+    pivo = inferior;
 
-    while(esquerda <= direita){
-        while(num[esquerda] < pivo && esquerda < superior){
+    while(esquerda < direita){
+        //Repita enquanto os elementos da primeira parte forem menores que o pivo
+        printf("olha a merda");
+        while(num[esquerda] <= num[pivo] && esquerda < superior){
             esquerda++;  
         }
-        while(num[direita] > pivo && direita > inferior){
+        //Repita enquanto os elementos da segunda parte forem maiores que o pivo
+        while(num[direita] > num[pivo] && direita > inferior){
             direita--;
         }
-        if(esquerda <= direita){
+        //Caso a posição do elemento da esquerda e da direita não
+        //seja a adequada, devemos troca-lo de lugar e inverter
+        //(muda de posição no array)
+        if(esquerda < direita){
+            //swap(&num[esquerda], &num[direita]);
             aux = num[esquerda];
             num[esquerda] = num[direita];
             num[direita] = aux;
-            esquerda++;
-            direita--;
-        }
+         }
     }
-    if(direita > inferior){
-        quickSort(num, inferior, direita);
-    }
-    if(esquerda < superior){
-        quickSort(num, esquerda, superior);
-    }
+    //Quando os indices se invertem devemos trocar a posição da direita
+    //pela posição do pivo, isso no garante a ordenação mas garante que 
+    //todos os elementos a direit e a esquerda do pivo são maiores ou
+    //menores do que ele
+    //swap(&num[direita], &num[pivo]);
+    aux = num[pivo];
+    num[pivo] = num[direita];
+    num[direita] = aux;
+    quickSort(num, inferior, direita - 1 );  
+    quickSort(num, direita + 1, superior);
 }
 
 void merge(int vetor[], int comeco, int meio, int fim) {
     int com1 = comeco, com2 = meio+1, comAux = 0, tam = fim-comeco+1;
     int *vetAux;
-    vetAux = (int*)malloc(tam * sizeof(int));
+    vetAux = (int*)malloc(tam * sizeof(int));//Alocando tabela auxiliar
 
-    while(com1 <= meio && com2 <= fim){
+    while(com1 <= meio && com2 <= fim){//Colocando dentro da tabela auxiliar o resultado
         if(vetor[com1] < vetor[com2]) {
             vetAux[comAux] = vetor[com1];
             com1++;
@@ -86,19 +101,19 @@ void merge(int vetor[], int comeco, int meio, int fim) {
         comAux++;
     }
 
-    while(com1 <= meio){  //Caso ainda haja elementos na primeira metade
+    while(com1 <= meio){  //Caso ainda haja elementos na primeira metade copie
         vetAux[comAux] = vetor[com1];
         comAux++;
         com1++;
     }
 
-    while(com2 <= fim) {   //Caso ainda haja elementos na segunda metade
+    while(com2 <= fim) {   //Caso ainda haja elementos na segunda metade copie
         vetAux[comAux] = vetor[com2];
         comAux++;
         com2++;
     }
 
-    for(comAux = comeco; comAux <= fim; comAux++){    //Move os elementos de volta para o vetor original
+    for(comAux = comeco; comAux <= fim; comAux++){//Move os elementos de volta para o vetor original
         vetor[comAux] = vetAux[comAux-comeco];
     }
     
@@ -109,14 +124,15 @@ void mergeSort(int vetor[], int comeco, int fim){
     if (comeco < fim) {
         int meio = (fim+comeco)/2;
 
-        mergeSort(vetor, comeco, meio);
-        mergeSort(vetor, meio+1, fim);
-        merge(vetor, comeco, meio, fim);
+        mergeSort(vetor, comeco, meio);//Ordena a metade inferior da tabela
+        mergeSort(vetor, meio+1, fim);//Ordena a metade superior da tabela
+        merge(vetor, comeco, meio, fim);//Intercalando as duas metades
     }
 }
 
 int main(void)
 {
+    printf("oii");
     clock_t Ticks[8];                 
     int i = 0;
     FILE *file; // Abrindo arquivo
@@ -137,23 +153,23 @@ int main(void)
     }
     
     Ticks[0] = clock();//Tempo Inicial
-    insertionSort(lista_selection, i);
+    insertionSort(lista_selection, i-1);
     Ticks[1] = clock();//Tempo Final
 
     Ticks[2] = clock();//Tempo Inicial
-    selectionSort(lista_selection, i);
+    selectionSort(lista_selection, i-1);
     Ticks[3] = clock();//Tempo Final
 
     Ticks[4] = clock();//Tempo Inicial
-    quickSort(lista_quicksort, 0, i);
+    quickSort(lista_quicksort, 0, i-1);
     Ticks[5] = clock();//Tempo Final
     
     Ticks[6] = clock();
-    mergeSort(lista_mergesort, 0, i);
+    mergeSort(lista_mergesort, 0, i-1);
     Ticks[7] = clock();
     
     for(int j = 0; j < i; j++) {
-        printf("%d ", lista_mergesort[j]); //Exibinid lista
+        printf("%d ", lista_quicksort[j]); //Exibinid lista
         //printf("\n"); 
     }
     double tempoInsert = (double)(Ticks[1] - Ticks[0]) * 1000 / CLOCKS_PER_SEC;
