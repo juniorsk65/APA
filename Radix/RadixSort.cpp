@@ -4,28 +4,43 @@
 
 #define MX 101
 int lista[MX];
-int lista_bucket[MX];
+int lista_radix[MX];
 
-void bucketSort(int num[], int tam){
-    int i, j;
-    int count[tam];
+void countSort(int num[], int tam, int rest){
+    int out[tam];
+    int count[tam+1] = {0};
+    int i;
 
-    for(i = 0; i < tam; i++){
-        count[i] = 0;
+    for(i = 0; i < tam; i++)
+        count[(num[i]/rest)%10]++;
+    
+    for(i = 1; i<10; i++)
+        count[i] += count[i-1];
+
+    for(i = tam - 1; i >= 0; i--)
+    {
+        out[count[(num[i]/rest)%10]-1] = num[i];
+        count[(num[i]/rest)%10]--;
     }
 
-    for(i = 0; i < tam; i++){
-        count[num[i]]++;
-    }
+    for(i = 0; i < tam; i++)
+        num[i] = out[i];
+}
 
-    for (i = 0, j = 0; i < tam; i++)  
-        for(; count[i] > 0; (count[i])--)
-            num[j++] = i;
+void radixSort(int num[], int tam){
+    
+    int max = num[0];
+    for(int i = 1; i < tam; i++)
+        if(num[i] > max)
+            max = num[i];
+
+    for(int rest = 1; max/rest > 0; rest *= 10)
+        countSort(num, tam, rest);
 }
 
 int main(void)
 {
-    clock_t Ticks[8];                 
+    clock_t Ticks[2];                 
     int i = 0;
     FILE *file; // Abrindo arquivo
     file = fopen("couting.txt","r");
@@ -38,18 +53,18 @@ int main(void)
     fclose(file);
 
     for(int a = 0; a < i; a++){
-        lista_bucket[a] = lista[a];
+        lista_radix[a] = lista[a];
     }
     
     Ticks[0] = clock();//Tempo Inicial
-    bucketSort(lista_bucket, i);
+    radixSort(lista_radix, i);
     Ticks[1] = clock();//Tempo Final
     
     for(int j = 0; j < i; j++) {
-        printf("%d ", lista_bucket[j]); //Exibinid lista
+        printf("%d ", lista_radix[j]); //Exibinid lista
         //printf("\n"); 
     }
-    double tempoBucket = (double)(Ticks[1] - Ticks[0]) * 1000 / CLOCKS_PER_SEC;
-    printf("\nTempo gasto Bucket: %g ms.\n", tempoBucket);
+    double tempoRadix = (double)(Ticks[1] - Ticks[0]) * 1000 / CLOCKS_PER_SEC;
+    printf("\nTempo gasto Bucket: %g ms.\n", tempoRadix);
     return 0;
 }
