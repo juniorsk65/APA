@@ -57,7 +57,7 @@ void dijkstra(int G[MAX][MAX],int n,int noinicial)
     // n = numero de vertices
     for(i=0;i<n;i++)
     {
-        distancia[i]=custo[noinicial][i];
+        distancia[i ]=custo[noinicial][i];
         pred[i]=noinicial;
         visitado[i]=0;
     }
