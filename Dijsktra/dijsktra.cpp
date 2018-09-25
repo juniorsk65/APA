@@ -11,7 +11,7 @@ int main()
     // Inserindo a matriz
     // n = numero de vertices
     // u = nó de inicio
-    int n = 10, u = 1;
+    int n = 10, u = 0;
     int G[MAX][MAX] = {{0, 270, 3179, 2991, 2840, 3031, 3421, 3738, 4947, 6226},
                        {270, 0, 2903, 2715,2564, 2755, 3144, 4153, 5362, 6641},
                        {3179, 2903, 0, 504, 655, 908, 1299, 2237, 3446, 3682},
@@ -30,7 +30,7 @@ void dijkstra(int G[MAX][MAX],int n,int noinicial)
 {
  
     int custo[MAX][MAX],distancia[MAX],pred[MAX];
-    int visitado[MAX],count,mindistancia,nextnode,i,j;
+    int visitado[MAX],count,mindistancia,proximo,i,j;
     
     //pred[] = salva o predecessor de cada nó
     //count = contador para salvar quantos nós foram visitados
@@ -71,30 +71,31 @@ void dijkstra(int G[MAX][MAX],int n,int noinicial)
     {
         mindistancia=INFINITO;
         
-        //nextnode gives the node at minimum distancia
-        //
+        //menor distancia para o proximo nó
         for(i=0;i<n;i++)
-            //Se a distancia[destino] < infinito && naovisitado[destino]
+            //Se a distancia[destino] < infinito && nao(visitado[destino])
             if(distancia[i]<mindistancia&&!visitado[i])
             {
+                
                 mindistancia=distancia[i];
-                nextnode=i;
+                proximo=i;
             }
             
-            //check if a better path exists through nextnode            
-            visitado[nextnode]=1;
+            visitado[proximo]=1;
+            //checando se existe um melhor caminho            
             for(i=0;i<n;i++)
                 if(!visitado[i])
-                    if(mindistancia+custo[nextnode][i]<distancia[i])
+                    if(mindistancia+custo[proximo][i]<distancia[i])
                     {
-                        distancia[i]=mindistancia+custo[nextnode][i];
-                        pred[i]=nextnode;
+                        distancia[i]=mindistancia+custo[proximo][i];
+                        pred[i]=proximo;
                     }
         count++;
     }
  
-    //print the path and distancia of each node
+    //Exibindo o resultado
     for(i=0;i<n;i++)
+        //Se não for o inicial
         if(i!=noinicial)
         {
             printf("\nDistance of node%d=%d",i,distancia[i]);
